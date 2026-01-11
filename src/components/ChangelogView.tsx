@@ -85,15 +85,15 @@ export function ChangelogView({
 
   if (!rawMarkdown && versions.length === 0) {
     return (
-      <div className="p-8 text-center text-charcoal-400 dark:text-charcoal-500">
+      <div className="p-8 text-center text-[var(--text-tertiary)]">
         No changelog data available
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-4">
-      {versions.map((version) => {
+    <div className="max-w-4xl mx-auto p-6 space-y-4">
+      {versions.map((version, index) => {
         const label = `v${version.version}`;
         const isGenerating = generatingAudioFor === label;
         const isPlaying = playingAudioFor === label;
@@ -101,29 +101,30 @@ export function ChangelogView({
         return (
           <div
             key={version.version}
-            className="border border-cream-300 dark:border-charcoal-500 rounded-xl overflow-hidden bg-white dark:bg-charcoal-800 transition-colors duration-500"
+            className="glass-card overflow-hidden animate-fade-in"
+            style={{ animationDelay: `${index * 50}ms`, opacity: 0 }}
           >
-            <div className="flex items-center bg-cream-100 dark:bg-charcoal-700">
+            <div className="flex items-center" style={{ background: 'var(--bg-secondary)' }}>
               <button
                 onClick={() => toggleVersion(version.version)}
-                className="flex-1 px-4 py-3 flex items-center justify-between hover:bg-cream-200 dark:hover:bg-charcoal-600 transition-colors"
+                className="flex-1 px-5 py-4 flex items-center justify-between transition-colors hover:bg-[var(--border-subtle)]"
               >
                 <div className="flex items-center gap-3">
                   {expandedVersions.has(version.version) ? (
-                    <ChevronDown className="w-5 h-5 text-charcoal-500 dark:text-charcoal-400" />
+                    <ChevronDown className="w-5 h-5 text-[var(--text-tertiary)]" />
                   ) : (
-                    <ChevronRight className="w-5 h-5 text-charcoal-500 dark:text-charcoal-400" />
+                    <ChevronRight className="w-5 h-5 text-[var(--text-tertiary)]" />
                   )}
-                  <span className="font-semibold text-charcoal-900 dark:text-cream-50">
+                  <span className="font-display font-semibold text-[var(--text-primary)]">
                     v{version.version}
                   </span>
                   {version.date && (
-                    <span className="text-sm text-charcoal-500 dark:text-charcoal-400">
+                    <span className="text-sm text-[var(--text-tertiary)]">
                       {version.date}
                     </span>
                   )}
                 </div>
-                <span className="text-sm text-charcoal-500 dark:text-charcoal-400">
+                <span className="text-sm text-[var(--text-tertiary)]">
                   {version.items.length} changes
                 </span>
               </button>
@@ -131,11 +132,12 @@ export function ChangelogView({
               <button
                 onClick={(e) => handleAudioClick(e, version)}
                 disabled={isGenerating}
-                className={`p-3 mr-2 rounded-xl transition-colors ${
+                className={`icon-btn mr-3 ${
                   isPlaying
-                    ? 'bg-coral-400/20 dark:bg-coral-600/20 text-coral-600 dark:text-coral-400'
-                    : 'text-charcoal-500 hover:bg-cream-200 dark:hover:bg-charcoal-600 hover:text-coral-600'
+                    ? 'text-[var(--accent-blue)]'
+                    : 'icon-btn-blue'
                 } disabled:opacity-50`}
+                style={isPlaying ? { background: 'rgba(74, 144, 217, 0.15)' } : undefined}
                 aria-label={isPlaying ? 'Stop audio' : 'Generate audio for this version'}
                 title={isPlaying ? 'Stop' : 'Listen to this release'}
               >
@@ -150,27 +152,27 @@ export function ChangelogView({
             </div>
 
             {expandedVersions.has(version.version) && (
-              <div className="p-4 space-y-2">
+              <div className="p-5 space-y-2">
                 {version.items.map((item, idx) => {
                   const itemId = `${version.version}-${idx}`;
                   return (
                     <div
                       key={itemId}
-                      className="group flex items-start gap-2 p-2 rounded-lg hover:bg-cream-100 dark:hover:bg-charcoal-700 transition-colors"
+                      className="group flex items-start gap-3 p-3 rounded-xl transition-colors hover:bg-[var(--border-subtle)]"
                     >
                       <span className="flex-shrink-0 text-lg">{getItemIcon(item.type)}</span>
-                      <div className="flex-1 min-w-0 prose prose-sm dark:prose-invert max-w-none text-charcoal-700 dark:text-cream-200">
+                      <div className="flex-1 min-w-0 prose prose-sm max-w-none text-[var(--text-secondary)]">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
                           {item.content}
                         </ReactMarkdown>
                       </div>
                       <button
                         onClick={() => copyToClipboard(item.content, itemId)}
-                        className="flex-shrink-0 p-1 opacity-0 group-hover:opacity-100 text-charcoal-400 hover:text-charcoal-600 dark:hover:text-cream-200 transition-opacity"
+                        className="icon-btn icon-btn-blue flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
                         aria-label="Copy to clipboard"
                       >
                         {copiedItem === itemId ? (
-                          <Check className="w-4 h-4 text-teal-500" />
+                          <Check className="w-4 h-4 text-[var(--accent-teal)]" />
                         ) : (
                           <Copy className="w-4 h-4" />
                         )}

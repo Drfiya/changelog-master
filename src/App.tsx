@@ -104,7 +104,10 @@ function App() {
   }, [download, latestVersion, playingFor]);
 
   return (
-    <div className="min-h-screen bg-cream-50 dark:bg-charcoal-900 transition-colors duration-500">
+    <div className="min-h-screen bg-base relative">
+      {/* Martini Racing Stripe Bar */}
+      <div className="martini-stripe-bar" />
+
       <Header
         version={latestVersion}
         lastFetched={lastFetched}
@@ -126,15 +129,15 @@ function App() {
 
       <TabNav activeTab={activeTab} onTabChange={setActiveTab} isAnalyzing={isAnalyzing} />
 
-      <main className="pb-24">
+      <main className="pb-24 relative z-10">
         {error ? (
           <div className="max-w-4xl mx-auto p-8">
-            <div className="bg-coral-400/10 dark:bg-coral-600/10 border border-coral-400 dark:border-coral-600 rounded-xl p-5 text-coral-700 dark:text-coral-400">
-              <p className="font-semibold">Error loading changelog</p>
-              <p className="text-sm mt-1 opacity-80">{error}</p>
+            <div className="glass-card section-card section-card-red p-6">
+              <p className="font-display font-semibold text-[var(--text-primary)]">Error loading changelog</p>
+              <p className="text-sm mt-2 text-[var(--text-secondary)]">{error}</p>
               <button
                 onClick={refresh}
-                className="mt-4 px-5 py-2.5 bg-coral-600 text-white rounded-xl hover:bg-coral-700 transition-all text-sm font-medium shadow-sm hover:shadow-md"
+                className="btn-primary mt-4 text-sm"
               >
                 Try Again
               </button>
@@ -186,7 +189,11 @@ function App() {
       {/* Floating Chat Button */}
       <button
         onClick={() => setIsChatOpen(true)}
-        className="fixed bottom-24 right-6 w-14 h-14 bg-coral-600 hover:bg-coral-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-105 hover:shadow-xl z-30"
+        className="fixed bottom-28 right-6 w-14 h-14 rounded-2xl shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-105 z-30"
+        style={{
+          background: 'var(--accent-navy)',
+          color: 'white',
+        }}
         aria-label="Open changelog chat"
         title="Ask about changelogs"
       >

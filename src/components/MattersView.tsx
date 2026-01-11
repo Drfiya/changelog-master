@@ -78,12 +78,12 @@ export function MattersView({
   if (isAnalyzing && !isViewingHistory) {
     return (
       <div className="max-w-4xl mx-auto p-8">
-        <div className="animate-pulse space-y-6">
-          <div className="h-24 bg-cream-200 dark:bg-charcoal-700 rounded-xl" />
-          <div className="h-40 bg-cream-200 dark:bg-charcoal-700 rounded-xl" />
-          <div className="h-32 bg-cream-200 dark:bg-charcoal-700 rounded-xl" />
+        <div className="space-y-6">
+          <div className="h-28 skeleton" />
+          <div className="h-44 skeleton" />
+          <div className="h-36 skeleton" />
         </div>
-        <p className="text-center text-charcoal-500 dark:text-charcoal-400 mt-6">
+        <p className="text-center text-[var(--text-tertiary)] mt-6 font-medium">
           Analyzing changelog with AI...
         </p>
       </div>
@@ -93,9 +93,11 @@ export function MattersView({
   if (!displayAnalysis) {
     return (
       <div className="max-w-4xl mx-auto p-8 text-center">
-        <p className="text-charcoal-500 dark:text-charcoal-400">
-          Analysis not available. Please check your Gemini API key configuration.
-        </p>
+        <div className="glass-card p-8">
+          <p className="text-[var(--text-secondary)]">
+            Analysis not available. Please check your Gemini API key configuration.
+          </p>
+        </div>
       </div>
     );
   }
@@ -138,12 +140,13 @@ export function MattersView({
       <button
         onClick={() => handleAudioClick(text, label)}
         disabled={isGenerating}
-        className={`p-2 rounded-xl transition-colors ${
+        className={`icon-btn ${
           isPlaying
-            ? 'bg-coral-400/20 dark:bg-coral-600/20 text-coral-600 dark:text-coral-400'
-            : 'text-charcoal-500 hover:bg-cream-200 dark:hover:bg-charcoal-600 hover:text-coral-600'
+            ? 'text-[var(--accent-navy)]'
+            : 'icon-btn-blue'
         } disabled:opacity-50`}
         title={isPlaying ? 'Stop' : 'Listen'}
+        style={isPlaying ? { background: 'rgba(74, 144, 217, 0.15)' } : undefined}
       >
         {isGenerating ? (
           <Loader2 className="w-5 h-5 animate-spin" />
@@ -168,17 +171,17 @@ export function MattersView({
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6">
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* History Selector */}
       {historyItems.length > 0 && (
         <div className="flex items-center justify-between">
           <div className="relative">
             <button
               onClick={() => setShowHistoryDropdown(!showHistoryDropdown)}
-              className="flex items-center gap-2 px-4 py-2 bg-cream-100 dark:bg-charcoal-700 rounded-xl border border-cream-300 dark:border-charcoal-500 text-charcoal-700 dark:text-cream-200 hover:bg-cream-200 dark:hover:bg-charcoal-600 transition-colors"
+              className="btn-secondary flex items-center gap-2 text-sm"
             >
               <History className="w-4 h-4" />
-              <span className="text-sm font-medium">
+              <span className="font-medium">
                 {isViewingHistory ? selectedVersion : 'Current Analysis'}
               </span>
               <ChevronDown className={`w-4 h-4 transition-transform ${showHistoryDropdown ? 'rotate-180' : ''}`} />
@@ -190,32 +193,26 @@ export function MattersView({
                   className="fixed inset-0 z-40"
                   onClick={() => setShowHistoryDropdown(false)}
                 />
-                <div className="absolute left-0 top-full mt-2 w-80 bg-white dark:bg-charcoal-700 rounded-xl shadow-xl border border-cream-300 dark:border-charcoal-500 z-50 overflow-hidden max-h-64 overflow-y-auto">
+                <div className="absolute left-0 top-full mt-2 w-80 dropdown-menu z-50 max-h-64 overflow-y-auto">
                   <button
                     onClick={showCurrentAnalysis}
-                    className={`w-full px-4 py-3 text-left text-sm flex items-center justify-between transition-colors ${
-                      !isViewingHistory
-                        ? 'bg-coral-400/20 dark:bg-coral-600/20 text-coral-700 dark:text-coral-400'
-                        : 'hover:bg-cream-100 dark:hover:bg-charcoal-600 text-charcoal-700 dark:text-cream-200'
-                    }`}
+                    className={`dropdown-item w-full text-left text-sm justify-between ${!isViewingHistory ? 'active' : ''}`}
                   >
                     <span className="font-medium">Current Analysis</span>
-                    <span className="text-xs text-charcoal-500 dark:text-charcoal-400">Latest</span>
+                    <span className="text-xs text-[var(--text-tertiary)]">Latest</span>
                   </button>
-                  <div className="border-t border-cream-200 dark:border-charcoal-500" />
+                  <div style={{ borderTop: '1px solid var(--border-subtle)' }} />
                   {historyItems.map((item) => (
                     <button
                       key={item.version}
                       onClick={() => loadHistoricalAnalysis(item.version)}
                       disabled={isLoadingHistory}
-                      className={`w-full px-4 py-3 text-left text-sm flex items-center justify-between transition-colors ${
-                        selectedVersion === item.version
-                          ? 'bg-coral-400/20 dark:bg-coral-600/20 text-coral-700 dark:text-coral-400'
-                          : 'hover:bg-cream-100 dark:hover:bg-charcoal-600 text-charcoal-700 dark:text-cream-200'
-                      } disabled:opacity-50`}
+                      className={`dropdown-item w-full text-left text-sm justify-between disabled:opacity-50 ${
+                        selectedVersion === item.version ? 'active' : ''
+                      }`}
                     >
                       <span className="font-medium truncate">{item.version}</span>
-                      <span className="text-xs text-charcoal-500 dark:text-charcoal-400 ml-2 flex-shrink-0">
+                      <span className="text-xs text-[var(--text-tertiary)] ml-2 flex-shrink-0">
                         {formatDate(item.created_at)}
                       </span>
                     </button>
@@ -228,7 +225,7 @@ export function MattersView({
           {isViewingHistory && (
             <button
               onClick={showCurrentAnalysis}
-              className="text-sm text-coral-600 dark:text-coral-400 hover:underline"
+              className="text-sm text-[var(--accent-navy)] hover:underline font-medium"
             >
               Back to current
             </button>
@@ -238,7 +235,7 @@ export function MattersView({
 
       {isLoadingHistory && (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-6 h-6 animate-spin text-coral-500" />
+          <Loader2 className="w-6 h-6 animate-spin text-[var(--accent-navy)]" />
         </div>
       )}
 
@@ -246,21 +243,21 @@ export function MattersView({
         <>
           {/* Viewing History Banner */}
           {isViewingHistory && (
-            <div className="p-3 bg-teal-500/10 dark:bg-teal-600/10 rounded-xl border border-teal-400/30 dark:border-teal-600/30 flex items-center gap-2">
-              <History className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-              <span className="text-sm text-teal-700 dark:text-teal-400">
-                Viewing archived analysis: <strong>{selectedVersion}</strong>
+            <div className="section-card section-card-cyan p-4 flex items-center gap-3">
+              <History className="w-5 h-5 text-[var(--accent-cyan)]" />
+              <span className="text-sm text-[var(--text-secondary)]">
+                Viewing archived analysis: <strong className="text-[var(--accent-cyan)]">{selectedVersion}</strong>
               </span>
             </div>
           )}
 
           {/* TLDR Section */}
-          <div className="p-6 bg-gradient-to-r from-coral-400/10 to-coral-500/10 dark:from-coral-600/10 dark:to-coral-700/10 rounded-xl border border-coral-400/30 dark:border-coral-600/30">
-            <div className="flex items-center gap-2 mb-4">
-              <h2 className="text-lg font-semibold text-coral-700 dark:text-coral-400">TL;DR</h2>
+          <div className="section-card section-card-navy p-6 animate-fade-in">
+            <div className="flex items-center gap-3 mb-4">
+              <h2 className="text-lg font-display font-semibold text-[var(--accent-navy)]">TL;DR</h2>
               <AudioButton text={displayAnalysis.tldr} label="tldr" />
             </div>
-            <div className="prose prose-sm dark:prose-invert max-w-none prose-p:text-charcoal-700 dark:prose-p:text-cream-200 prose-p:leading-relaxed prose-strong:text-coral-600 dark:prose-strong:text-coral-400 prose-ul:my-2 prose-li:my-0.5">
+            <div className="prose prose-sm max-w-none text-[var(--text-secondary)]">
               <ReactMarkdown>{displayAnalysis.tldr}</ReactMarkdown>
             </div>
           </div>
@@ -270,10 +267,10 @@ export function MattersView({
             <button
               onClick={() => handleAudioClick(getFullAnalysisText(), 'full-analysis')}
               disabled={generatingAudioFor === 'full-analysis'}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${
+              className={`flex items-center gap-2 px-5 py-3 rounded-xl transition-all font-medium text-sm ${
                 playingAudioFor === 'full-analysis'
-                  ? 'bg-coral-500 text-white'
-                  : 'bg-coral-400/20 dark:bg-coral-600/20 text-coral-700 dark:text-coral-400 hover:bg-coral-400/30 dark:hover:bg-coral-600/30'
+                  ? 'btn-primary'
+                  : 'btn-secondary'
               } disabled:opacity-50`}
             >
               {generatingAudioFor === 'full-analysis' ? (
@@ -302,28 +299,28 @@ export function MattersView({
 
           {/* Removals */}
           {displayAnalysis.categories.removals.length > 0 && (
-            <div className="p-4 border-l-4 border-coral-500 bg-coral-400/10 dark:bg-coral-600/10 rounded-r-xl">
-              <div className="flex items-center gap-2 mb-3">
-                <AlertCircle className="w-5 h-5 text-coral-600 dark:text-coral-400" />
-                <h3 className="font-semibold text-coral-700 dark:text-coral-400">Removals</h3>
+            <div className="section-card section-card-red p-5 animate-fade-in">
+              <div className="flex items-center gap-2 mb-4">
+                <AlertCircle className="w-5 h-5 text-[var(--accent-red)]" />
+                <h3 className="font-display font-semibold text-[var(--text-primary)]">Removals</h3>
               </div>
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {displayAnalysis.categories.removals.map((removal, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
+                  <li key={idx} className="flex items-start gap-3">
                     <span
-                      className={`px-2 py-0.5 text-xs rounded-lg ${
+                      className={`badge ${
                         removal.severity === 'critical'
-                          ? 'bg-coral-600/20 text-coral-700 dark:text-coral-400'
+                          ? 'badge-ember'
                           : removal.severity === 'high'
-                          ? 'bg-coral-500/20 text-coral-600 dark:text-coral-400'
-                          : 'bg-coral-400/20 text-coral-500 dark:text-coral-400'
+                          ? 'badge-ember'
+                          : 'badge-teal'
                       }`}
                     >
                       {removal.severity}
                     </span>
                     <div>
-                      <span className="font-medium text-charcoal-900 dark:text-cream-50">{removal.feature}</span>
-                      <span className="text-charcoal-600 dark:text-cream-300"> — {removal.why}</span>
+                      <span className="font-medium text-[var(--text-primary)]">{removal.feature}</span>
+                      <span className="text-[var(--text-secondary)]"> — {removal.why}</span>
                     </div>
                   </li>
                 ))}
@@ -389,7 +386,7 @@ export function MattersView({
               title="API Changes"
               icon={<Code className="w-5 h-5" />}
               items={displayAnalysis.categories.api_changes}
-              color="indigo"
+              color="cyan"
               onAudio={(text) => handleAudioClick(text, 'api')}
               isGenerating={generatingAudioFor === 'api'}
               isPlaying={playingAudioFor === 'api'}
@@ -398,12 +395,12 @@ export function MattersView({
 
           {/* Action Items */}
           {displayAnalysis.action_items.length > 0 && (
-            <div className="p-4 bg-cream-100 dark:bg-charcoal-700 rounded-xl border border-cream-300 dark:border-charcoal-500">
-              <h3 className="font-semibold text-charcoal-900 dark:text-cream-50 mb-3">Action Items</h3>
+            <div className="glass-card p-5 animate-fade-in">
+              <h3 className="font-display font-semibold text-[var(--text-primary)] mb-4">Action Items</h3>
               <ul className="space-y-2">
                 {displayAnalysis.action_items.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-charcoal-700 dark:text-cream-200">
-                    <span className="text-coral-500 mt-0.5">—</span>
+                  <li key={idx} className="flex items-start gap-3 text-[var(--text-secondary)]">
+                    <span className="text-[var(--accent-navy)] mt-0.5">—</span>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -420,44 +417,48 @@ interface SectionProps {
   title: string;
   icon: React.ReactNode;
   items: string[];
-  color: 'red' | 'orange' | 'teal' | 'gray' | 'purple' | 'blue' | 'indigo';
+  color: 'red' | 'orange' | 'teal' | 'gray' | 'purple' | 'blue' | 'cyan';
   onAudio?: (text: string) => void;
   isGenerating?: boolean;
   isPlaying?: boolean;
 }
 
 function Section({ title, icon, items, color, onAudio, isGenerating, isPlaying }: SectionProps) {
-  const colorClasses = {
-    red: 'border-coral-600 bg-coral-500/10 dark:bg-coral-600/10 text-coral-600 dark:text-coral-400',
-    orange: 'border-coral-500 bg-coral-400/10 dark:bg-coral-500/10 text-coral-500 dark:text-coral-400',
-    teal: 'border-teal-500 bg-teal-500/10 dark:bg-teal-600/10 text-teal-600 dark:text-teal-400',
-    gray: 'border-charcoal-400 bg-cream-100 dark:bg-charcoal-700 text-charcoal-500 dark:text-cream-300',
-    purple: 'border-purple-500 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
-    blue: 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
-    indigo: 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400',
+  const colorMap: Record<string, string> = {
+    red: 'section-card-red',
+    orange: 'section-card-ember',
+    teal: 'section-card-teal',
+    gray: 'section-card-cyan',
+    purple: 'section-card-purple',
+    blue: 'section-card-blue',
+    cyan: 'section-card-cyan',
   };
 
-  const classes = colorClasses[color];
-  const [borderColor, bgColor, textColor] = classes.split(' ');
+  const iconColorMap: Record<string, string> = {
+    red: 'var(--accent-red)',
+    orange: 'var(--accent-red)',
+    teal: 'var(--accent-teal)',
+    gray: 'var(--text-secondary)',
+    purple: '#7C3AED',
+    blue: 'var(--accent-blue)',
+    cyan: 'var(--accent-blue)',
+  };
 
   const sectionText = `${title}: ${items.join('. ')}`;
 
   return (
-    <div className={`p-4 border-l-4 ${borderColor} ${bgColor} rounded-r-xl`}>
-      <div className="flex items-center justify-between mb-3">
+    <div className={`section-card ${colorMap[color]} p-5 animate-fade-in`}>
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <span className={textColor}>{icon}</span>
-          <h3 className="font-semibold text-charcoal-900 dark:text-cream-50">{title}</h3>
+          <span style={{ color: iconColorMap[color] }}>{icon}</span>
+          <h3 className="font-display font-semibold text-[var(--text-primary)]">{title}</h3>
         </div>
         {onAudio && (
           <button
             onClick={() => onAudio(sectionText)}
             disabled={isGenerating}
-            className={`p-1.5 rounded-xl transition-colors ${
-              isPlaying
-                ? 'bg-coral-400/20 dark:bg-coral-600/20 text-coral-600'
-                : 'text-charcoal-400 hover:bg-white/50 dark:hover:bg-charcoal-600 hover:text-coral-600'
-            } disabled:opacity-50`}
+            className={`icon-btn ${isPlaying ? '' : 'icon-btn-blue'} disabled:opacity-50`}
+            style={isPlaying ? { background: 'rgba(74, 144, 217, 0.15)', color: 'var(--accent-ember)' } : undefined}
             title={isPlaying ? 'Stop' : 'Listen'}
           >
             {isGenerating ? (
@@ -470,10 +471,10 @@ function Section({ title, icon, items, color, onAudio, isGenerating, isPlaying }
           </button>
         )}
       </div>
-      <ul className="space-y-1">
+      <ul className="space-y-2">
         {items.map((item, idx) => (
-          <li key={idx} className="text-charcoal-700 dark:text-cream-200 flex items-start gap-2">
-            <span className="text-charcoal-400 dark:text-cream-400">•</span>
+          <li key={idx} className="flex items-start gap-3 text-[var(--text-secondary)]">
+            <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: iconColorMap[color] }} />
             <span>{item}</span>
           </li>
         ))}

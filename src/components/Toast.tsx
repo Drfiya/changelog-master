@@ -15,11 +15,16 @@ export function Toast({ message, type, onClose }: ToastProps) {
 
   return (
     <div
-      className={`fixed bottom-28 right-6 flex items-center gap-3 px-5 py-4 rounded-xl shadow-xl backdrop-blur-sm z-50 transition-all duration-300 ${
-        type === 'success'
-          ? 'bg-teal-500/95 text-white'
-          : 'bg-coral-600/95 text-white'
-      }`}
+      className="fixed bottom-32 right-6 flex items-center gap-3 px-5 py-4 rounded-xl z-50 animate-fade-in"
+      style={{
+        background: type === 'success'
+          ? 'linear-gradient(135deg, var(--accent-teal) 0%, #0d9488 100%)'
+          : 'linear-gradient(135deg, var(--error) 0%, #dc2626 100%)',
+        boxShadow: type === 'success'
+          ? '0 8px 32px rgba(20, 184, 166, 0.4)'
+          : '0 8px 32px rgba(239, 68, 68, 0.4)',
+        color: 'white',
+      }}
       role="alert"
     >
       {type === 'success' ? (
